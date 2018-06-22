@@ -2,6 +2,7 @@ from django.conf import settings
 from http import HTTPStatus
 
 ENABLE_REDIS_CACHE = getattr(settings, "ENABLE_REDIS_CACHE", None)
+REDIS_CACHE_PREFIX = getattr(settings, "REDIS_CACHE_PREFIX", None)
 
 REDIS_HOST = getattr(settings, "REDIS_HOST", 'localhost')
 REDIS_PORT = getattr(settings, "REDIS_PORT", 6379)

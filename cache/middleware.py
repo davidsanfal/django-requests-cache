@@ -39,7 +39,10 @@ class CacheMiddleware:
 
     def __call__(self, request):
         if self.cache:
-            response = self.cache.get(request.get_full_path())
+            prefix = settings.REDIS_CACHE_PREFIX
+            full_path = request.get_full_path()
+            cache_key = '{}:{}'.format(prefix, full_path) if prefix else full_path
+            response = self.cache.get(cache_key)
             if not response:
                 response = self.get_response(request)
                 if str(response.status_code) in settings.REDIS_STATUS_CODE_ALLOWED:
@@ -47,8 +50,8 @@ class CacheMiddleware:
                         'content': response.content,
                         'content_type': response._headers.get('content-type')[1]
                     }
-                    self.cache.set(request.get_full_path(), pickle.dumps(data))
-                    self.cache.expire(request.get_full_path(), settings.REDIS_EXPIRE)
+                    self.cache.set(cache_key, pickle.dumps(data))
+                    self.cache.expire(cache_key, settings.REDIS_EXPIRE)
             else:
                 data = pickle.loads(response)
                 response = HttpResponse(data.get('content'),
