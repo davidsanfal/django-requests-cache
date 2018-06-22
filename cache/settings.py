@@ -6,6 +6,7 @@ ENABLE_REDIS_CACHE = getattr(settings, "ENABLE_REDIS_CACHE", None)
 REDIS_HOST = getattr(settings, "REDIS_HOST", 'localhost')
 REDIS_PORT = getattr(settings, "REDIS_PORT", 6379)
 REDIS_DB = getattr(settings, "REDIS_DB", 0)
+REDIS_PASSWORD = getattr(settings, "REDIS_PASSWORD", None)
 REDIS_SOCKET_TIMEOUT = getattr(settings, "REDIS_SOCKET_TIMEOUT", None)
 REDIS_SOCKET_CONNECT_TIMEOUT = getattr(
     settings, "REDIS_SOCKET_CONNECT_TIMEOUT", None)

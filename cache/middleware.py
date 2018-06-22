@@ -13,6 +13,7 @@ class CacheMiddleware:
                 host=settings.REDIS_HOST,
                 port=settings.REDIS_PORT,
                 db=settings.REDIS_DB,
+                password=settings.REDIS_PASSWORD,
                 socket_timeout=settings.REDIS_SOCKET_TIMEOUT,
                 socket_connect_timeout=settings.REDIS_SOCKET_CONNECT_TIMEOUT,
                 socket_keepalive=settings.REDIS_SOCKET_KEEPALIVE,
