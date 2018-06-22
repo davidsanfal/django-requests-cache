@@ -2,18 +2,22 @@ from django.http import HttpResponse
 import redis
 import pickle
 from . import settings
+from redis.exceptions import ConnectionError
 
 
 class CacheMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
+        self.cache = None
         try:
-            self.cache = redis.Redis(
-                host=settings.REDIS_HOST,
-                port=settings.REDIS_PORT,
-                db=settings.REDIS_DB
-            )
-        except:
+            if settings.ENABLE_REDIS_CACHE:
+                self.cache = redis.Redis(
+                    host=settings.REDIS_HOST,
+                    port=settings.REDIS_PORT,
+                    db=settings.REDIS_DB
+                )
+                self.cache.info()
+        except ConnectionError:
             self.cache = None
 
     def __call__(self, request):
@@ -21,6 +25,7 @@ class CacheMiddleware:
             response = self.cache.get(request.get_full_path())
             if not response:
                 response = self.get_response(request)
+                print(response.status_code)
                 data = {
                     'content': response.content,
                     'content_type': response._headers.get('content-type')[1]
