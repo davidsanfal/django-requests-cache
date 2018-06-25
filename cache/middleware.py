@@ -2,7 +2,30 @@ from django.http import HttpResponse
 import redis
 import pickle
 from . import settings
-from redis.exceptions import ConnectionError
+import os
+import logging
+import json
+
+
+def logging_es(cache_key, cache_value, force_log=False):
+    """ES logging."""
+    prefix = settings.REDIS_CACHE_PREFIX
+    cache_name = '{} {}'.format(prefix, 'django cache') if prefix else 'django cache'
+    environment = os.environ.get('DJANGO_SETTINGS_MODULE', 'production')
+    environment = environment.lstrip('config.settings').lower()
+    if environment != 'test' and (force_log or settings.DEBUG or environment == 'development'):
+        logger = logging.getLogger('django-requests-cache')
+        cache_value = {
+            'content': json.loads(cache_value.get('content')),
+            'content_type': cache_value.get('content_type'),
+        }
+        logger.debug(
+            cache_name,
+            extra={
+                "cache_key": cache_key,
+                "cache_value": cache_value,
+            }
+        )
 
 
 class CacheMiddleware:
@@ -52,6 +75,8 @@ class CacheMiddleware:
                     }
                     self.cache.set(cache_key, pickle.dumps(data))
                     self.cache.expire(cache_key, settings.REDIS_EXPIRE)
+                    if settings.CACHE_LOGSTASH:
+                        logging_es(cache_key, data)
             else:
                 data = pickle.loads(response)
                 response = HttpResponse(data.get('content'),
