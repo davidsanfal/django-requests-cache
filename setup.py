@@ -8,7 +8,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='django-requests-cache',
-    version='0.1.9',
+    version='0.1.10',
     description='Django Cache.',
     long_description=long_description,
     url='https://github.com/davidsanfal/django-requests-cache',
