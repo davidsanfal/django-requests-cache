@@ -23,7 +23,7 @@ setup(
     keywords='django cache, redis, cache',
     packages=find_packages(exclude=['contrib', 'docs', 'tests', 'examples']),
     install_requires=[
-        'Django==2.0',
+        'Django==2.0.12',
         'redis==2.10.6'
     ],
     extras_require={
